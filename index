@@ -1,0 +1,198 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Página Inicial</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretty+Single&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: white;
+      font-family: 'Pretty Single', cursive;
+      color: red;
+      text-align: center;
+      margin-top: 20vh;
+    }
+    button {
+      margin-top: 40px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: red;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>MEU CORAÇÃO É SEU HÁ MUITO TEMPO,<br>MAS ANTES VOCÊ VAI PRECISAR ENCONTRAR ELE MAIS UMA VEZ...</h1>
+  <button onclick="window.location.href='labirinto.html'">Vamos Lá</button>
+</body>
+</html>
+
+<!-- labirinto.html -->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Labirinto</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretty+Single&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: white;
+      font-family: 'Pretty Single', cursive;
+      color: red;
+      text-align: center;
+      margin: 0;
+    }
+    h1 {
+      margin-top: 30px;
+    }
+    canvas {
+      display: block;
+      margin: 20px auto;
+      border: 2px solid black;
+    }
+  </style>
+</head>
+<body>
+  <h1>VOCÊ CONSEGUE?</h1>
+  <canvas id="mazeCanvas" width="500" height="500"></canvas>
+  <script>
+    const canvas = document.getElementById('mazeCanvas');
+    const ctx = canvas.getContext('2d');
+    const gridSize = 25;
+    const rows = 20;
+    const cols = 20;
+
+    const player = { x: 0, y: 0 };
+    const goal = { x: 10, y: 10 }; // posição aproximada do coração
+
+    const maze = Array.from({ length: rows }, () => Array(cols).fill(0));
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        if (Math.random() < 0.3) maze[i][j] = 1;
+      }
+    }
+    maze[player.y][player.x] = 0;
+    maze[goal.y][goal.x] = 0;
+
+    function drawMaze() {
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          if (maze[y][x] === 1) {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(x * gridSize, y * gridSize, gridSize, gridSize);
+          } else {
+            ctx.clearRect(x * gridSize, y * gridSize, gridSize, gridSize);
+          }
+        }
+      }
+      ctx.fillStyle = 'red';
+      ctx.beginPath();
+      ctx.arc(goal.x * gridSize + gridSize / 2, goal.y * gridSize + gridSize / 2, 10, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = 'blue';
+      ctx.fillRect(player.x * gridSize, player.y * gridSize, gridSize, gridSize);
+    }
+
+    function movePlayer(dx, dy) {
+      const newX = player.x + dx;
+      const newY = player.y + dy;
+      if (
+        newX >= 0 && newX < cols &&
+        newY >= 0 && newY < rows &&
+        maze[newY][newX] === 0
+      ) {
+        player.x = newX;
+        player.y = newY;
+        drawMaze();
+        if (player.x === goal.x && player.y === goal.y) {
+          window.location.href = 'final.html';
+        }
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp') movePlayer(0, -1);
+      if (e.key === 'ArrowDown') movePlayer(0, 1);
+      if (e.key === 'ArrowLeft') movePlayer(-1, 0);
+      if (e.key === 'ArrowRight') movePlayer(1, 0);
+    });
+
+    drawMaze();
+  </script>
+</body>
+</html>
+
+<!-- final.html -->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Pedido</title>
+  <link href="https://fonts.googleapis.com/css2?family=Morning+Bright&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: white;
+      font-family: 'Morning Bright', cursive;
+      color: black;
+      text-align: center;
+      padding: 40px;
+    }
+    img {
+      width: 200px;
+      border-radius: 15px;
+    }
+    .botoes {
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 10px;
+    }
+    .sim {
+      background-color: green;
+      color: white;
+    }
+    .nao {
+      background-color: red;
+      color: white;
+    }
+    .mensagem-final {
+      display: none;
+      margin-top: 30px;
+      font-size: 24px;
+      color: #d63384;
+      animation: confete 1s infinite alternate;
+    }
+    @keyframes confete {
+      from { transform: translateY(0); }
+      to { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+  <h1>EU SABIA QUE VOCÊ SEMPRE ENCONTRARIA MEU CORAÇÃO, NÃO IMPORTA A DIFICULDADE.</h1>
+  <img src="https://media.tenor.com/FlBxvctvUXsAAAAC/snoopy-peanuts.gif" alt="Snoopy com flores">
+  <h2>BEATRIZ, VOCÊ ACEITA SER MINHA NAMORADA?</h2>
+  <div class="botoes">
+    <button class="sim" onclick="mostrarMensagem()">SIM 💖</button>
+    <button class="nao">NÃO FUJÃO 😜</button>
+  </div>
+  <div class="mensagem-final" id="mensagemFinal">
+    O PRÓXIMO PEDIDO VAI SER MELHOR! 🎉🎊💖
+  </div>
+  <script>
+    function mostrarMensagem() {
+      document.getElementById('mensagemFinal').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
